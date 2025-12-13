@@ -1,0 +1,26 @@
+services:
+  api:
+    build: .
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - PORT=3000
+      - REDIS_URL=redis://redis_db:6379
+      - PUBLIC_IP=${PUBLIC_IP:-localhost}
+    depends_on:
+      redis_db:
+        condition: service_healthy
+    restart: always
+
+  redis_db:
+    image: redis:7-alpine 
+    volumes:
+      - shortener_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  shortener_redis_data:
