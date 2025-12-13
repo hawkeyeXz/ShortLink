@@ -2,10 +2,12 @@
   "name": "shortener",
   "version": "1.0.0",
   "description": "Short link generator",
-  "main": "index.js",
+  "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --forceExit"
   },
   "keywords": [],
   "author": "Fajlur",
@@ -19,5 +21,9 @@
     "nanoid": "^5.1.6",
     "pm2": "^6.0.14",
     "redis": "^5.10.0"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4"
   }
 }

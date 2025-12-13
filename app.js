@@ -20,11 +20,18 @@ app.use((req, res, next)=>{
 
 app.use(ipLimiter)
 
-app.use(express.json());
+
+app.get("/", (req, res)=>{
+    res.status(200).send("Welcome to ShortLink.")
+});
 
 app.use("/", router);
 
 const PORT = process.env.PORT;
 
+if(process.env.NODE_ENV != 'test'){
+    const PORT = process.env.PORT;
+    app.listen(PORT,() => console.log(`Shortener online on port ${PORT}`));
+}
 
-app.listen(PORT,() => console.log(`Shortener online on port ${PORT}`));
+export default app;
