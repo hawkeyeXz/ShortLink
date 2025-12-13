@@ -10,6 +10,13 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(deviceMiddleware);
 
+app.use((req, res, next)=>{
+    const forwardIP =req.headers['x-forwarded-for'];
+    const socketIP = req.socket.remoteAddress;
+    console.log(`[REQUEST] IP: ${forwardIP || socketIP} | URL: ${req.url}`);
+    next();
+})
+
 app.use("/", router);
 
 const PORT = process.env.PORT;
