@@ -5,10 +5,13 @@ on:
     branches:
       - main
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
-
     services:
       redis:
         image: redis
@@ -34,24 +37,60 @@ jobs:
       - name: Run Tests
         run: npm test
 
-  deploy:
+  build-and-push:
     needs: test
-    
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      packages: write
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            type=sha
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-
           script: |
-            cd ~/Shortener/code
-            git fetch --all
-            git reset --hard origin/main
-            docker compose up -d --build
+            mkdir -p ~/Shortener
+            cd ~/Shortener
+            
+            
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+           
+            docker pull ghcr.io/${{ github.repository }}:latest
+            docker compose down
+            docker compose up -d
