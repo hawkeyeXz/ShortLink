@@ -5,7 +5,7 @@ const redis = createClient({
   url: process.env.REDIS_URL
 });
 
-await redis.connect();
+
 redis.on('error', (err)=>{
   logger.error("Redis connection error", {error: err.message});
 });
