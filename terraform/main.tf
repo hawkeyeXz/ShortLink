@@ -3,7 +3,7 @@ data "aws_vpc" "default" {
 }
 
 resource "aws_security_group" "app_sg" {
-  name        = "shortener-sg-v2"
+  name        = "ShortLink-Server-SG"
   description = "Allow HTTP, HTTPS, and SSH"
   vpc_id      = data.aws_vpc.default.id
 
@@ -18,15 +18,10 @@ resource "aws_security_group" "app_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.lb_sg.id]
   }
 
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+
 
   egress {
     from_port   = 0
@@ -84,3 +79,6 @@ output "server_2_public_ip" {
   value = aws_instance.server_2.public_ip
 }
 
+output "load_balancer_dns" {
+  value = aws_lb.app_lb.dns_name
+}
