@@ -2,8 +2,8 @@ events {}
 
 http {
     upstream backend_servers {
-        server ${server1_ip}:80;
-        server ${server2_ip}:80;
+        server ${server1_ip}:80 max_fails=3 fail_timeout=30s;
+        server ${server2_ip}:80 max_fails=3 fail_timeout=30s;
     }
 
     server {
