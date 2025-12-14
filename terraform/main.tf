@@ -18,7 +18,7 @@ resource "aws_security_group" "app_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    security_groups = [aws_security_group.lb_sg.id]
+    security_groups = [aws_security_group.nginx_lb_sg.id]
   }
 
 
@@ -79,6 +79,6 @@ output "server_2_public_ip" {
   value = aws_instance.server_2.public_ip
 }
 
-output "load_balancer_dns" {
-  value = aws_lb.app_lb.dns_name
-}
+#output "load_balancer_dns" {
+#  value = aws_lb.app_lb.dns_name
+#}
