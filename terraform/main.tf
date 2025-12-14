@@ -74,15 +74,35 @@ resource "aws_instance" "server_2" {
   }
 }
 
-
-output "server_1_public_ip" {
-  value = aws_instance.server.public_ip
+resource "aws_eip" "server_1_eip" {
+  instance = aws_instance.server.id
+  domain   = "vpc"
 }
 
-output "server_2_public_ip" {
-  value = aws_instance.server_2.public_ip
+resource "aws_eip" "server_2_eip" {
+  instance = aws_instance.server_2.id
+  domain   = "vpc"
 }
+
+resource "aws_eip" "lb_eip" {
+  instance = aws_instance.nginx_lb.id
+  domain   = "vpc"
+}
+
+
 
 #output "load_balancer_dns" {
 #  value = aws_lb.app_lb.dns_name
 #}
+
+output "server_1_static_ip" {
+  value = aws_eip.server_1_eip.public_ip
+}
+
+output "server_2_static_ip" {
+  value = aws_eip.server_2_eip.public_ip
+}
+
+output "load_balancer_static_ip" {
+  value = aws_eip.lb_eip.public_ip
+}

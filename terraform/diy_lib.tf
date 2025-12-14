@@ -68,7 +68,3 @@ systemctl enable nginx
 systemctl start nginx
 EOF
 }
-
-output "load_balancer_ip" {
-  value = aws_instance.nginx_lb.public_ip
-}
