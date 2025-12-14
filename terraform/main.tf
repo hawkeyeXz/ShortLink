@@ -43,17 +43,12 @@ resource "aws_instance" "server" {
   key_name      = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [aws_security_group.app_sg.id]
 
-  user_data = <<-EOF
-  
-              ${templatefile("setup.sh", {
-                nginx_config          = file("../nginx/nginx.conf")
-                docker_compose_config = file("../docker-compose.yml")
-              })}
-              ${templatefile("footconfig.sh",{
-                foot_terminfo   = file("foot.terminfo.tpl")
-              })}
+  user_data = templatefile("setup.sh", {
+    nginx_config          = file("../nginx/nginx.conf")
+    docker_compose_config = file("../docker-compose.yml")
+    foot_terminfo         = file("foot.terminfo.tpl")
+})
 
-              EOF
 
   tags = {
     Name = "ShortLink-App-Server"
@@ -67,17 +62,12 @@ resource "aws_instance" "server_2" {
   key_name      = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [aws_security_group.app_sg.id]
 
-  user_data = <<-EOF
-  
-              ${templatefile("setup.sh", {
-                nginx_config          = file("../nginx/nginx.conf")
-                docker_compose_config = file("../docker-compose.yml")
-              })}
-              ${templatefile("footconfig.sh",{
-                foot_terminfo   = file("foot.terminfo.tpl")
-              })}
-              
-              EOF
+  user_data = templatefile("setup.sh", {
+    nginx_config          = file("../nginx/nginx.conf")
+    docker_compose_config = file("../docker-compose.yml")
+    foot_terminfo         = file("foot.terminfo.tpl")
+})
+
 
   tags = {
     Name = "ShortLink-App-Server-2"

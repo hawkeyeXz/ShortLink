@@ -44,27 +44,29 @@ resource "aws_instance" "nginx_lb" {
     Name = "ShortLink-LoadBalancer"
   }
 
-  user_data = <<-EOF
-              #!/bin/bash
-              yum update -y
-              yum install -y nginx
-              
-              ${templatefile("footconfig.sh",{
-                foot_terminfo   = file("foot.terminfo.tpl")
+ user_data = <<-EOF
+#!/bin/bash
+yum update -y
+yum install -y nginx
 
-              })}
+cat <<'TERMINFO_EOT' > /tmp/foot.terminfo
+${file("${path.module}/foot.terminfo.tpl")}
+TERMINFO_EOT
 
-              cat <<'EOT' > /etc/nginx/conf.d/shortlink.conf
-              ${templatefile("${path.module}/nginx.conf.tpl", {
-                server1_ip = aws_instance.server.private_ip
-                server2_ip = aws_instance.server_2.private_ip
-              })}
-              EOT
-              
-              
-              systemctl enable nginx
-              systemctl start nginx
-              EOF
+export TERM=xterm
+/usr/bin/tic -x /tmp/foot.terminfo
+/usr/bin/infocmp foot > /var/log/foot_terminfo_check.log 2>&1
+
+cat <<'EOT' > /etc/nginx/conf.d/shortlink.conf
+${templatefile("${path.module}/nginx.conf.tpl", {
+server1_ip = aws_instance.server.private_ip
+server2_ip = aws_instance.server_2.private_ip
+})}
+EOT
+
+systemctl enable nginx
+systemctl start nginx
+EOF
 }
 
 output "load_balancer_ip" {
