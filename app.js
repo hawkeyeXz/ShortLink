@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import router from "./routes/index.js";
 import deviceMiddleware from "./middleware/device.js";
 import { ipLimiter } from './middleware/rateLimit.js';
+import logger from './utils/logger.js';
 
 const app = express();
 
@@ -14,7 +15,11 @@ app.use(deviceMiddleware);
 app.use((req, res, next)=>{
     const forwardIP =req.headers['x-forwarded-for'];
     const socketIP = req.socket.remoteAddress;
-    console.log(`[REQUEST] IP: ${forwardIP || socketIP} | URL: ${req.url}`);
+    logger.info("Incoming Request:", {
+        ip: forwardIP || socketIP,
+        url: req.url,
+        method: req.method
+    })
     next();
 })
 
@@ -31,7 +36,9 @@ const PORT = process.env.PORT;
 
 if(process.env.NODE_ENV != 'test'){
     const PORT = process.env.PORT;
-    app.listen(PORT,() => console.log(`Shortener online on port ${PORT}`));
+    app.listen(PORT,() => {
+        logger.info(`Shortener online on port ${PORT}`);
+});
 }
 
 export default app;
