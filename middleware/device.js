@@ -1,17 +1,22 @@
 import { nanoid } from "nanoid";
 
 export default function deviceMiddleware(req, res, next) {
-  let deviceId = req.cookies?.deviceId;
+  const existingId = req.cookies.deviceId;
 
-  if (!deviceId) {
-    deviceId = nanoid(16);
-    res.cookie("deviceId", deviceId, {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-      sameSite: "lax",
-    });
+  if(existingId){
+    req.deviceId = existingId;
+    return next();
   }
 
-  req.deviceId = deviceId;
+  
+  const newId = nanoid();
+  res.cookie("deviceId", newId, {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    sameSite: "lax",
+  });
+  
+
+  req.deviceId = newId;
   next();
 }

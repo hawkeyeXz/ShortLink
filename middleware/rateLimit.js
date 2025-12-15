@@ -2,7 +2,7 @@ import redis from "../services/redisClient.js";
 import { todayKey } from "../utils/dateKey.js";
 import rateLimit from "express-rate-limit";
 
-const DAILY_LIMIT = 100;
+const DAILY_LIMIT = 10;
 
 export async function rateLimitToken(req, res, next) {
   const token = req.headers["x-api-key"];

@@ -11,7 +11,7 @@ app.enable('trust proxy')
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(deviceMiddleware);
+
 
 app.use((req, res, next)=>{
     const forwardIP =req.headers['x-forwarded-for'];
@@ -27,13 +27,12 @@ app.use((req, res, next)=>{
 app.use(ipLimiter)
 
 
-app.get("/", (req, res)=>{
+app.get("/", deviceMiddleware, (req, res)=>{
     res.status(200).send("Welcome to ShortLink.")
 });
 
 app.use("/", router);
 
-const PORT = process.env.PORT;
 
 if(process.env.NODE_ENV != 'test'){
     const PORT = process.env.PORT;

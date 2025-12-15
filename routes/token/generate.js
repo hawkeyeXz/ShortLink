@@ -12,7 +12,10 @@ const BURST_WINDOW = 120;
 
 router.post("/", async (req, res) => {
   try {
-    const deviceId = req.deviceId;
+    const deviceId = req.cookies.deviceId;
+    if(!deviceId){
+      return res.status(401).json({error: "Session cookie required..."})
+    }
     
    
     const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
