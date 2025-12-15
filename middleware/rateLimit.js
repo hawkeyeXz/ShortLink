@@ -48,6 +48,7 @@ export const ipLimiter = rateLimit({
 
   
   keyGenerator: (req) => {
-    return req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    return ip.replace(/^.*:/, '');
   }
 });

@@ -4,40 +4,66 @@ import { todayKey } from "../../utils/dateKey.js";
 
 const router = express.Router();
 
+
+const LIMIT_PER_DEVICE = 5;
+const LIMIT_IP_DAILY = 100;
+const LIMIT_SHORTEN_DAILY = 100;
+
 router.get("/", async (req, res) => {
   try {
     const deviceId = req.deviceId;
+    
+    
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const cleanIp = ip.replace(/^.*:/, ''); 
+
     const date = todayKey();
 
-    const countKey = `devkeycount:${deviceId}:${date}`;
+   
+    const deviceGenKey = `gen:device:${deviceId}:${date}`;
+    const ipGenKey = `gen:ip_daily:${cleanIp}:${date}`;
     const activeKey = `devkey:${deviceId}`;
 
-    const tokenGenUsed = Number(await redis.get(countKey)) || 0;
-    const tokenGenRemaining = 5 - tokenGenUsed;
+    
+    const [deviceGenStr, ipGenStr, token] = await Promise.all([
+      redis.get(deviceGenKey),
+      redis.get(ipGenKey),
+      redis.get(activeKey)
+    ]);
 
-    const token = await redis.get(activeKey);
+    const deviceGenUsed = Number(deviceGenStr) || 0;
+    const ipGenUsed = Number(ipGenStr) || 0;
 
+    
     let shortenUsed = 0;
-    let shortenRemaining = 100;
-
     if (token) {
       const shortenKey = `tokenuse:${token}:${date}`;
       shortenUsed = Number(await redis.get(shortenKey)) || 0;
-      shortenRemaining = 100 - shortenUsed;
     }
 
+    
     res.json({
       deviceId,
+      ip: cleanIp, 
       activeToken: token || null,
-      tokenGeneration: {
-        used: tokenGenUsed,
-        remaining: tokenGenRemaining,
-        limit: 5
-      },
-      urlShortening: {
-        used: shortenUsed,
-        remaining: shortenRemaining,
-        limit: 100
+      limits: {
+        tokenGeneration: {
+          device: {
+            used: deviceGenUsed,
+            limit: LIMIT_PER_DEVICE,
+            remaining: Math.max(0, LIMIT_PER_DEVICE - deviceGenUsed)
+          },
+          network: {
+            used: ipGenUsed,
+            limit: LIMIT_IP_DAILY,
+            remaining: Math.max(0, LIMIT_IP_DAILY - ipGenUsed)
+          }
+        },
+        shortening: {
+          used: shortenUsed,
+          limit: LIMIT_SHORTEN_DAILY,
+          remaining: Math.max(0, LIMIT_SHORTEN_DAILY - shortenUsed)
+        }
       }
     });
 

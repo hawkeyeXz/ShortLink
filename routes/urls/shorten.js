@@ -1,14 +1,14 @@
 import express from "express";
 import redis from "../../services/redisClient.js";
 import { nanoid } from "nanoid";
-import { validateUrl } from "../../middleware/validateUrl.js"; // FIXED: Added Security
-import { rateLimitToken } from "../../middleware/rateLimit.js"; // FIXED: Added Rate Limit
+import { validateUrl } from "../../middleware/validateUrl.js"; 
+import { rateLimitToken } from "../../middleware/rateLimit.js";
 
 const router = express.Router();
 
 router.post("/", rateLimitToken, validateUrl, async (req, res) => {
   try {
-    const { url } = req.body;
+    const  url  = req.cleanedUrl;
     const id = nanoid(8);
 
     await redis.set(`short:${id}`, url, {EX:48 * 3600});

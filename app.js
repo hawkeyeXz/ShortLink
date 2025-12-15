@@ -7,6 +7,7 @@ import { ipLimiter } from './middleware/rateLimit.js';
 import logger from './utils/logger.js';
 
 const app = express();
+app.enable('trust proxy')
 
 app.use(express.json());
 app.use(cookieParser());
