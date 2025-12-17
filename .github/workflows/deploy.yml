@@ -69,39 +69,30 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@master
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            mkdir -p ~/ShortLink
-            cd ~/ShortLink
-            
-            
-            REPO_NAME="${{ github.repository }}"
-            IMAGE_NAME=$(echo "$REPO_NAME" | tr '[:upper:]' '[:lower:]')
-            
-           
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-            echo "Pulling image: ghcr.io/$IMAGE_NAME:latest"
-            docker pull ghcr.io/$IMAGE_NAME:latest
-            
-
-            
-            if [ ! -f docker-compose.yml ]; then
-              echo "Error: docker-compose.yml not found in ~/ShortLink!"
-              exit 1
-            fi
-
-            echo "Creating .env file..."
-            cat <<EOF > .env
-            PORT=3000
-            REDIS_URL=${{ secrets.REDIS_URL }}
-            BASE_URL=${{ secrets.BASE_URL }}
-            EOF
-
-            docker compose down || true
-            docker compose up -d
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+      - name: Deploy to App Servers via SSM
+        run: |
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets "Key=tag:Role,Values=AppServer" \
+            --comment "Deployment from GitHub Actions" \
+            --parameters 'commands=[
+              "mkdir -p /var/www/ShortLink",
+              "cd /var/www/ShortLink",
+              "echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin",
+              "export IMAGE_NAME=$(echo ${{ github.repository }} | tr [:upper:] [:lower:])",
+              "docker pull ghcr.io/$IMAGE_NAME:latest",
+              "cat <<EOF > .env",
+              "PORT=3000",
+              "REDIS_URL=${{ secrets.REDIS_URL }}",
+              "BASE_URL=${{ secrets.BASE_URL }}",
+              "EOF",
+              "docker compose -f docker-compose.yml down || true",
+              "docker compose -f docker-compose.yml up -d",
+              "chown -R ec2-user:ec2-user /var/www/ShortLink"
+            ]'
