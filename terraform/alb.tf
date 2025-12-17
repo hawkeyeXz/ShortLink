@@ -79,18 +79,6 @@ resource "aws_lb_listener" "front_end" {
 }
 
 
-resource "aws_lb_target_group_attachment" "server_1" {
-  target_group_arn = aws_lb_target_group.app_tg.arn
-  target_id        = aws_instance.server.id
-  port             = 80
-}
-
-
-resource "aws_lb_target_group_attachment" "server_2" {
-  target_group_arn = aws_lb_target_group.app_tg.arn
-  target_id        = aws_instance.server_2.id
-  port             = 80
-}
 
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.app_lb.arn

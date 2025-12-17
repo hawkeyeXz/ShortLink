@@ -29,7 +29,8 @@ EOT
 
 cat <<EOF > /var/www/ShortLink/.env
 BASE_URL=${domain_name}
-PORT=${port}
+PORT=${app_port}
+REDIS_URL=${redis_url}
 
 EOF
 
