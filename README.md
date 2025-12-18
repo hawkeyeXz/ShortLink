@@ -109,7 +109,7 @@ For production, the app is hosted at `https://shorts.codes`.
 | Variable | Description | Default                | Required |
 |----------|-------------|------------------------|----------|
 | `PORT`   | Server port | `3000`                 | Yes      |
-| `REDIS_URL` | Redis connection URL | `redis://localhost:6379` | Yes |
+| `REDIS_URL` | Redis connection URL | `redis://localhost:6379` or `redis://redis:6379` | Yes |
 | `BASE_URL`  | Base URL for short links | `http://localhost:3000` or `https://shorts.codes` | Yes |
 | `NODE_ENV`  | Environment mode | `development`         | No      |
 
@@ -145,7 +145,7 @@ POST /generate-key
 Generates a new API token for the device identified by the cookie.
 
 **Request Headers:**
-- Include the `device_id` cookie in the header.
+- Include the `deviceId` cookie in the header.
 
 **Response:**
 ```json
@@ -158,13 +158,13 @@ Generates a new API token for the device identified by the cookie.
 - For local setup:
   ```bash
   curl --include --request POST \
-    --header "Cookie: device_id=abc123" \
+    --header "Cookie: deviceId=abc123" \
     http://localhost:3000/generate-key
   ```
 - For production:
   ```bash
   curl --include --request POST \
-    --header "Cookie: device_id=abc123" \
+    --header "Cookie: deviceId=abc123" \
     https://shorts.codes/generate-key
   ```
 
@@ -177,7 +177,7 @@ GET /get-key
 Retrieves the active API token for the current device based on the cookie.
 
 **Request Headers:**
-- Include the `device_id` cookie in the header.
+- Include the `deviceId` cookie in the header.
 
 **Response:**
 ```json
@@ -190,13 +190,13 @@ Retrieves the active API token for the current device based on the cookie.
 - For local setup:
   ```bash
   curl --include --request GET \
-    --header "Cookie: device_id=abc123" \
+    --header "Cookie: deviceId=abc123" \
     http://localhost:3000/get-key
   ```
 - For production:
   ```bash
   curl --include --request GET \
-    --header "Cookie: device_id=abc123" \
+    --header "Cookie: deviceId=abc123" \
     https://shorts.codes/get-key
   ```
 
@@ -210,7 +210,7 @@ Returns the current usage statistics for the active token.
 
 **Request Headers:**
 - `x-api-key`: Your API token
-- `Cookie`: The `device_id` cookie
+- `Cookie`: The `deviceId` cookie
 
 **Response:**
 ```json
@@ -226,14 +226,14 @@ Returns the current usage statistics for the active token.
   ```bash
   curl --include --request GET \
     --header "x-api-key: your-token-here" \
-    --header "Cookie: device_id=abc123" \
+    --header "Cookie: deviceId=abc123" \
     http://localhost:3000/usage
   ```
 - For production:
   ```bash
   curl --include --request GET \
     --header "x-api-key: your-token-here" \
-    --header "Cookie: device_id=abc123" \
+    --header "Cookie: deviceId=abc123" \
     https://shorts.codes/usage
   ```
 
@@ -247,7 +247,7 @@ Shortens a long URL to a unique short URL.
 
 **Request Headers:**
 - `x-api-key`: Your API token
-- `Cookie`: The `device_id` cookie
+- `Cookie`: The `deviceId` cookie
 
 **Request Body:**
 ```json
@@ -269,7 +269,7 @@ Shortens a long URL to a unique short URL.
   ```bash
   curl --include --request POST \
     --header "x-api-key: your-token-here" \
-    --header "Cookie: device_id=abc123" \
+    --header "Cookie: deviceId=abc123" \
     --header "Content-Type: application/json" \
     --data '{"url": "https://example.com/very/long/url"}' \
     http://localhost:3000/shorten
@@ -278,7 +278,7 @@ Shortens a long URL to a unique short URL.
   ```bash
   curl --include --request POST \
     --header "x-api-key: your-token-here" \
-    --header "Cookie: device_id=abc123" \
+    --header "Cookie: deviceId=abc123" \
     --header "Content-Type: application/json" \
     --data '{"url": "https://example.com/very/long/url"}' \
     https://shorts.codes/shorten
