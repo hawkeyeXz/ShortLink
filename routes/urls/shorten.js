@@ -8,6 +8,11 @@ const router = express.Router();
 
 router.post("/", rateLimitToken, validateUrl, async (req, res) => {
   try {
+
+    if (!req.cookies || !req.cookies.deviceId) {
+      return res.status(400).json({ error: "Coookie is missing or Expired" });
+    }
+
     const  url  = req.cleanedUrl;
     const id = nanoid(8);
 

@@ -7,7 +7,8 @@ import { ipLimiter } from './middleware/rateLimit.js';
 import logger from './utils/logger.js';
 
 const app = express();
-app.enable('trust proxy')
+// disable this line when running locally
+app.enable('trust proxy', 1) 
 
 app.use(express.json());
 app.use(cookieParser());
