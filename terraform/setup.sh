@@ -26,6 +26,13 @@ cat <<'EOT' > /var/www/ShortLink/docker-compose.yml
 ${docker_compose_config}
 EOT
 
+cat <<'EOT' > /var/www/ShortLink/alert_rules.yml
+${alert_config}
+EOT
+
+cat <<'EOT' > /var/www/ShortLink/prometheus.yml
+${prometheus_config}
+EOT
 
 cat <<EOF > /var/www/ShortLink/.env
 BASE_URL=${domain_name}
