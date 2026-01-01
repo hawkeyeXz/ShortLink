@@ -31,16 +31,3 @@ resource "aws_key_pair" "deployer" {
   public_key = file(pathexpand("~/.ssh/aws-sl.pub"))
 }
 
-
-variable "domain_name" {
-  type        = string
-}
-variable "app_port" {
-  type    = number
-  default = 3000
-}
-
-variable "redis_url" {
-  description = "Connecting string for redis"
-  type        = string
-}

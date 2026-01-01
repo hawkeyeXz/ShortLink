@@ -6,6 +6,14 @@ resource "aws_autoscaling_group" "app_asg" {
     max_size            = 3
     desired_capacity    = 1
 
+    instance_refresh {
+        strategy = "Rolling"
+        preferences {
+            min_healthy_percentage = 100
+        }
+        triggers = ["tag"]
+    }
+
     launch_template {
         id      = aws_launch_template.app_lt.id
         version = "$Latest"
