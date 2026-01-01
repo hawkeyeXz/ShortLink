@@ -11,7 +11,12 @@ resource "aws_launch_template" "app_lt" {
         docker_compose_config = file("../docker-compose.yml")
         foot_terminfo         = file("foot.terminfo.tpl")
         alert_config          = file("../alert_rules.yml")
-        prometheus_config     = file("../prometheus.yml")
+
+        prometheus_config = templatefile("../prometheus.yml", {
+        grafana_url      = var.grafana_url
+        grafana_user     = var.grafana_user
+        grafana_password = var.grafana_password
+        })
 
         domain_name           = var.domain_name
         app_port              = var.app_port
