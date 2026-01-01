@@ -1,7 +1,6 @@
 services:
   app:
-    #image: ghcr.io/fajlur79/shortlink:latest
-    build: .
+    image: ghcr.io/fajlur79/shortlink:latest
     
     container_name: shortlink_app
     restart: always
