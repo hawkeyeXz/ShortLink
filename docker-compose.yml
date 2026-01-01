@@ -15,6 +15,14 @@ services:
       
     depends_on:
       - redis
+    
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-south-1        
+        awslogs-group: /ecs/shortlink
+        awslogs-create-group: "true"
+        awslogs-stream-prefix: app
 
   redis:
     image: redis:7-alpine

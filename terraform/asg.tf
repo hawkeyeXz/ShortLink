@@ -3,7 +3,7 @@ resource "aws_autoscaling_group" "app_asg" {
     vpc_zone_identifier = data.aws_subnets.default.ids
 
     min_size            = 1
-    max_size            = 1
+    max_size            = 3
     desired_capacity    = 1
 
     launch_template {
