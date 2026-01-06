@@ -151,4 +151,4 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 **Fajlur**
 - Email: fajlur939@proton.me
 - GitHub: [@fajlur79](https://github.com/fajlur79)
-- X(twitter): [@Fajlur_](https://x.com/fajlur_)
+- X(twitter): [@Fajlur](https://x.com/fajlur_)
