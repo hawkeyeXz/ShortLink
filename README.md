@@ -127,27 +127,15 @@ In production, Redis is provided by AWS ElastiCache and does not
 run on EC2 instances. All application instances connect to the
 centralized Redis store using the REDIS_URL environment variable.
 
-For local Docker-based development, Redis is defined as:
+for more details [here](docs/DevOps.md#redis-local-vs-production)
 
-```bash
-redis:
-  image: redis:7-alpine
-  container_name: shortlink_redis
-  restart: always
-  volumes:
-    - redis_data:/data
-
-volumes:
-  redis_data:
-
-```
 ---
 ## Documentation Index
 
 Detailed documentation is split by responsibility:
 
-* [DevOps & Infrastructure](docs/Devops.md)
-* [How It Works](docs/HowItWorks.md)
+* [DevOps & Infrastructure](docs/DevOps.md)
+* [How It Works](docs/Workflow.md)
 * [API Documentation](docs/API.md)
 * [Contributing Guide](CONTRIBUTING.md)
 * [Security Policy](SECURITY.md)
@@ -157,4 +145,10 @@ Detailed documentation is split by responsibility:
 ## License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+---
+## 👤 Author
 
+**Fajlur**
+- Email: fajlur939@proton.me
+- GitHub: [@fajlur79](https://github.com/fajlur79)
+- X(twitter): [@Fajlur_](https://x.com/fajlur_)
