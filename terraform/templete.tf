@@ -20,7 +20,7 @@ resource "aws_launch_template" "app_lt" {
 
         domain_name           = var.domain_name
         app_port              = var.app_port
-        redis_url             = var.redis_url
+        redis_url = "redis://${aws_elasticache_replication_group.app_redis.primary_endpoint_address}:6379"
         grafana_url           = var.grafana_url
         grafana_user          = var.grafana_user
         grafana_password      = var.grafana_password
