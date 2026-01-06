@@ -1,4 +1,6 @@
-# ShortLink
+<h1 align=center>ShortLink</h1>
+
+<div align=center>
 
 ![Node.js](https://img.shields.io/badge/node.js-339933.svg?style=for-the-badge\&logo=node.js\&logoColor=white)
 ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge\&logo=express\&logoColor=white)
@@ -8,8 +10,7 @@
 ![Terraform](https://img.shields.io/badge/terraform-7B42BC.svg?style=for-the-badge\&logo=terraform\&logoColor=white)
 ![AWS](https://img.shields.io/badge/aws-232F3E.svg?style=for-the-badge\&logo=amazon-aws\&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-2088FF.svg?style=for-the-badge\&logo=github-actions\&logoColor=white)
-
----
+</div>
 
 ## Overview
 
@@ -118,7 +119,7 @@ This starts:
 All services are wired together using Docker networking.
 
 
-*Note on Redis*
+***Note on Redis***
 
 For local development, Redis runs as a Docker container via
 docker-compose to avoid external cloud dependencies.
