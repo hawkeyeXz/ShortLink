@@ -20,7 +20,7 @@ resource "aws_security_group" "redis_sg"{
 
 }
 
-resource "aws_elasticache_replication_group" "app-redis" {
+resource "aws_elasticache_replication_group" "app_redis" {
     replication_group_id    = "app-redis"
     description             = "Redis for ShortLink App"
     node_type               = "cache.t3.micro"
@@ -29,4 +29,9 @@ resource "aws_elasticache_replication_group" "app-redis" {
     num_cache_clusters      = 1
 
     security_group_ids      = [aws_security_group.redis_sg.id]
+}
+
+output "redis_replication_group_id" {
+  description = "The ID of the ElastiCache Replication Group"
+  value       = aws_elasticache_replication_group.app_redis.primary_endpoint_address
 }
