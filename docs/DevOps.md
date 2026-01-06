@@ -192,7 +192,7 @@ CloudWatch is responsible for **infrastructure-level observability**:
 It acts as the first line of defense against platform-level failures.
 
 ### Prometheus
-![promethuus](docs/images/prometheus.png)
+![promethuus](/docs/images/prometheus.png)
 
 Prometheus is used for **application-level metrics**:
 
@@ -204,7 +204,7 @@ Prometheus is used for **application-level metrics**:
 Metrics are scraped from the application and stored in a time-series model optimized for analysis.
 
 ### Grafana
-![grafana](docs/images/grafana.png)
+![grafana](/docs/images/grafana.png)
 
 Grafana serves as the **visualization and analysis layer**:
 
