@@ -36,6 +36,10 @@ app.use((req, res, next)=>{
     next();
 })
 
+app.get('/health', (req, res)=>{
+    res.status(200).send('OK');
+});
+
 app.use(ipLimiter)
 
 
@@ -54,9 +58,27 @@ app.use("/", router);
 
 if(process.env.NODE_ENV != 'test'){
     const PORT = process.env.PORT;
-    app.listen(PORT,() => {
+
+    const server = app.listen(PORT,() => {
         logger.info(`ShortLink online on port ${PORT}`);
-});
+    });
+
+    const shutdown = () => {
+        logger.info('SIGTERM/SIGINT received. Shutting down gracefully...');
+        server.close(()=>{
+            logger.info('Closed out remaining connections.');
+            process.exit(0);
+        })
+
+        setTimeout (()=>{
+            logger.error('Could not close connections in time, forcefully shutting down');
+            process.exit(1);
+        },1000);
+    };
+    
+    process.on('SIGTERM', shutdown);
+    process.on('SIGINT', shutdown)
+
 }
 
 export default app;
