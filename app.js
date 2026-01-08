@@ -40,7 +40,7 @@ app.get('/health', (req, res)=>{
     res.status(200).send('OK');
 });
 
-// app.use(ipLimiter)
+app.use(ipLimiter)
 
 
 app.get("/", deviceMiddleware, (req, res)=>{

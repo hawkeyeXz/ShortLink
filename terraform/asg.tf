@@ -17,6 +17,7 @@ resource "aws_autoscaling_group" "app_asg" {
         triggers = ["tag"]
     }
 
+
     launch_template {
         id      = aws_launch_template.app_lt.id
         version = "$Latest"
@@ -29,4 +30,19 @@ resource "aws_autoscaling_group" "app_asg" {
         propagate_at_launch = true
     }
 
+}
+
+#trigger
+
+resource "aws_autoscaling_policy" "cpu_policy" {
+  name                   = "cpu-scaling-policy"
+  policy_type            = "TargetTrackingScaling"
+  autoscaling_group_name = aws_autoscaling_group.app_asg.name
+
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+    target_value = 20.0
+  }
 }
