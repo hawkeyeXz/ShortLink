@@ -3,7 +3,7 @@ resource "aws_autoscaling_group" "app_asg" {
     vpc_zone_identifier = module.vpc.private_subnets
 
     min_size            = 2
-    max_size            = 4
+    max_size            = 5
     desired_capacity    = 2
 
     health_check_type           = "ELB"
