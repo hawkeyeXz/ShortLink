@@ -1,4 +1,8 @@
-<h1 align=center>ShortLink</h1>
+<h1 align="center">
+  <a href="https://shorts.codes/" style="color: inherit; text-decoration: none;">
+    ShortLink
+  </a>
+</h1>
 
 <div align=center>
 
