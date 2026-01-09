@@ -9,6 +9,7 @@
 ![NGINX](https://img.shields.io/badge/nginx-009639.svg?style=for-the-badge\&logo=nginx\&logoColor=white)
 ![Terraform](https://img.shields.io/badge/terraform-7B42BC.svg?style=for-the-badge\&logo=terraform\&logoColor=white)
 ![AWS](https://img.shields.io/badge/aws-232F3E.svg?style=for-the-badge\&logo=amazon-aws\&logoColor=white)
+![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-2088FF.svg?style=for-the-badge\&logo=github-actions\&logoColor=white)
 </div>
 
@@ -18,6 +19,20 @@
 
 The project is intentionally opinionated. It favors clarity, debuggability, and production readiness over minimalism, making it suitable both as a reference architecture and as a foundation for real deployments.
 
+---
+## 💼 Business Case
+
+### The Problem
+Enterprise organizations often rely on third-party URL shorteners (like Bitly), which introduces three risks:
+1.  **Data Leakage:** Click analytics and traffic patterns are exposed to a third party.
+2.  **Vendor Lock-in:** Migrating thousands of active short links is difficult and costly.
+3.  **Cost at Scale:** SaaS pricing often penalizes high-volume usage (e.g., millions of redirects).
+
+### The Solution: ShortLink
+ShortLink provides a **self-hosted, sovereign infrastructure** alternative.
+* **Ownership:** You own the data and the domain.
+* **Performance:** Redis caching ensures <10ms redirect latency, faster than most SaaS APIs.
+* **Predictable Pricing:** Fixed infrastructure costs regardless of click volume.
 ---
 
 ## Core Features
@@ -74,13 +89,42 @@ This separation ensures each layer can scale, fail, or evolve independently.
 
 ### Infrastructure & Automation
 
-![Terraform](https://img.shields.io/badge/terraform-7B42BC.svg?style=for-the-badge\&logo=terraform\&logoColor=white)
-![AWS](https://img.shields.io/badge/aws-232F3E.svg?style=for-the-badge\&logo=amazon-aws\&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/github%20actions-2088FF.svg?style=for-the-badge\&logo=github-actions\&logoColor=white)
+![Terraform](https://img.shields.io/badge/terraform-7B42BC.svg?style=for-the-badge&logo=terraform&logoColor=white)
+![AWS](https://img.shields.io/badge/aws-232F3E.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/github%20actions-2088FF.svg?style=for-the-badge&logo=github-actions&logoColor=white)
 
-* Terraform for Infrastructure-as-Code
-* AWS as the cloud provider
-* GitHub Actions for CI/CD pipelines
+* **Terraform:** Infrastructure-as-Code for the AWS environment.
+* **AWS:** Primary cloud provider (EC2, ALB, ElastiCache).
+* **Cloudflare:** DNS management, SSL offloading, and DDoS protection.
+* **Vercel:** Serverless hosting for the "Edge" deployment branch.
+* **GitHub Actions:** CI/CD pipelines for automated testing and deployment.
+
+---
+
+## 🏗️ Deployment & Architecture
+
+This project is engineered to support two distinct deployment models, demonstrating versatility between **Enterprise Control** and **Serverless Efficiency**.
+
+| Mode | Technology Stack | Cost | Use Case |
+| :--- | :--- | :--- | :--- |
+| **Enterprise (AWS)** | EC2, ALB, Auto Scaling, Redis, Terraform | ~$82/mo | **High Availability / Data Sovereignty:** For organizations requiring full infrastructure control and strict SLAs. |
+| **Serverless (Vercel)** | Vercel Functions, Upstash Redis | **$0/mo** | **Portfolio / Startup:** Zero-maintenance scaling for lean deployments. *(Live Demo runs here)* |
+
+## ⏱️ Engineering Effort (Man Hours)
+
+A breakdown of the **~54 hours** invested in this project:
+
+| Phase | Time | Focus Areas |
+| :--- | :--- | :--- |
+| **Architecture & Design** | 10h | System design, failure mode analysis, AWS topology planning. |
+| **Backend Development** | 15h | Node.js API, Redis integration, rate limiting logic, unit testing. |
+| **DevOps & IaC** | 20h | Terraform provisioning, ASG configuration, zero-downtime deployment strategies. |
+| **CI/CD & Observability** | 4h | GitHub Actions pipelines, Grafana/Prometheus dashboards. |
+| **Documentation** | 5h | Technical writing, architectural diagrams, API specs. |
+
+**Total Investment:** ~54 Engineering Hours
 
 ---
 
@@ -107,19 +151,9 @@ The service will be available at `http://localhost:3000` by default.
 
 ### Docker (Recommended)
 
-In [`docker-compose.yml`](docker-compose.yml) comment the cloudwatch logging part
-```bash
-# logging:
-#       driver: awslogs
-#       options:
-#         awslogs-region: ap-south-1
-#         awslogs-group: /ecs/shortlink
-#         awslogs-create-group: "true"
-
-```
 ```bash
 # Build and start all services
-docker compose up --build -d
+docker compose -f docker-compose.local.yml --build -d
 ```
 
 This starts:
