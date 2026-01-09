@@ -235,7 +235,7 @@ While the primary goal of this project was to demonstrate **infrastructure-as-co
 
 To solve this, I implemented a **Dual-Branch Strategy**:
 1.  **`main` Branch (AWS):** The full enterprise-grade implementation with Docker, NGINX, and Auto Scaling. This serves as the "Proof of Concept" for large-scale deployments.
-2.  **`vercel` Branch (Serverless):** An adapted version of the codebase optimized for Vercel's edge network.
+2.  **`Alt-deployment/Vercel` Branch (Serverless):** An adapted version of the codebase optimized for Vercel's edge network.
 
 ### Why this matters
 This approach demonstrates the ability to:
@@ -266,13 +266,13 @@ This architecture prioritizes **High Availability (HA)** and **Scalability**. Be
 During the development of ShortLink, several architectural approaches were implemented and evaluated. The code for these alternative patterns is preserved in `terraform/alternatives/` for reference.
 
 ### 1. Manual Load Balancing (vs. ALB)
-* **Initial Approach:** A single EC2 instance running NGINX (`manual_lb.tf`) with a custom IAM role and S3 bucket (`manual_lb_dependencies.tf`) to manage SSL certificates manually.
+* **Initial Approach:** A single EC2 instance running NGINX (`diy_lb.tf`) with a custom IAM role and S3 bucket (`s3_iam.tf`) to manage SSL certificates manually.
 * **Decision to Change:** This setup required complex IAM permission management and manual certificate rotation. Migrating to an **AWS Application Load Balancer (ALB)** + **Cloudflare** offloaded all SSL/TLS complexity and provided native Auto Scaling integration.
 
 ### 2. Self-Hosted Redis (vs. ElastiCache)
-* **Initial Approach:** Redis running directly on an EC2 instance (`redis_vm.tf`).
+* **Initial Approach:** Redis running directly on an EC2 instance as Centralized Redis (`redis.tf`).
 * **Decision to Change:** Managing persistence, backups, and high availability for a stateful database distracted from feature development. Switching to **AWS ElastiCache** provided a fully managed, multi-AZ compatible datastore.
 
 ### 3. Route53 DNS (vs. Cloudflare)
-* **Initial Approach:** Using AWS Route53 for DNS management (`route53.tf`).
+* **Initial Approach:** Using AWS Route53 for DNS management (`dns.tf`).
 * **Decision to Change:** Cloudflare was selected to replace Route53 to leverage its **Free Tier CDN** and **DDoS Protection**, reducing the monthly operational overhead by ~$15 (WAF + Hosted Zone costs).
